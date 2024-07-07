@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat Web Socket.IO</title>
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/emoji-mart/css/emoji-mart.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/emoji-mart/dist/browser.js"></script>
+    <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
     <script>
       tailwind.config = {
         darkMode: "class",
@@ -66,41 +69,48 @@
         },
       };
     </script>
-  </head>
-  <body>
+</head>
+<body>
     <section class="bg-gray-50" id="formLogin">
-      <div
-        class="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0"
-      >
-        <a
-          href="#"
-          class="flex items-center mb-6 text-2xl font-semibold text-gray-900"
-        >
-          Chat Web Socket.IO
+      <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
+        <!-- Logo Corporación Hibrida -->
+        <img src="/img/logo.png" alt="Logo Corporación Hibrida" class="mb-6" style="max-width: 150px;">
+        
+        <a href="#" class="flex items-center mb=6 text-2xl font-semibold text-gray-900">
+          Chat Web Grupo Hibrida
         </a>
-        <div
-          class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0"
-        >
+        <div class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1
-              class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl"
-            >
+            <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Inicia sesión en tu cuenta
             </h1>
             <div class="space-y-4 md:space-y-6">
               <div>
-                <label
-                  for="userNickName"
-                  class="block mb-2 text-sm font-medium text-gray-900"
-                  >Usuario</label
-                >
+                <label for="userNickName" class="block mb-2 text-sm font-medium text-gray-900">Usuario</label>
                 <input
                   type="text"
                   name="userNickName"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   id="userNickName"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="Ingresa tu nickname"
                   required=""
+                />
+              </div>
+              <div>
+                <label for="userRole" class="block mb-2 text-sm font-medium text-gray-900">Rol</label>
+                <select id="userRole" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                  <option value="colaborador">Colaborador</option>
+                  <option value="administrador">Administrador</option>
+                </select>
+              </div>
+              <div id="adminCodeField" style="display: none;">
+                <label for="adminCode" class="block mb-2 text-sm font-medium text-gray-900">Código de Administrador</label>
+                <input
+                  type="password"
+                  name="adminCode"
+                  id="adminCode"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  placeholder="Ingresa el código de administrador"
                 />
               </div>
               <button
@@ -130,7 +140,7 @@
           </div>
           <div class="search_chat">
             <div>
-              <input type="text" placeholder="" />
+              <input type="text" id="searchInput" name="searchInput" placeholder="Buscar..." />
               <ion-icon name="search-outline"></ion-icon>
             </div>
           </div>
@@ -142,9 +152,7 @@
               <div class="details">
                 <div class="listHead">
                   <h4>Chat Grupo Hibrida</h4>
-                  <p class="time" style="visibility: hidden;">
-                    Hora en 2da versión.
-                  </p>
+                  <p class="time" style="visibility: hidden;">Hora en 2da versión.</p>
                 </div>
                 <div class="message_p">
                   <p>Recuerda, respetar a los demás usuarios.</p>
@@ -156,9 +164,7 @@
                 <div class="details">
                   <div class="listHead">
                     <h4>Usuarios en línea:</h4>
-                    <p class="time" style="visibility: hidden;">
-                      Hora en 2da versión.
-                    </p>
+                    <p class="time" style="visibility: hidden;">Hora en 2da versión.</p>
                   </div>
                   <div class="message_p">
                     <ul id="usersActive"></ul>
@@ -174,7 +180,7 @@
               <div class="userimg">
                 <img src="img/chat-grupal.jpg" class="cover" />
               </div>
-              <h4>Chat<br /><span>en línea</span></h4>
+              <h4>Chat Global<br /><span>en línea</span></h4>
             </div>
             <ul class="nav_icons">
               <li><ion-icon name="search-outline"></ion-icon></li>
@@ -182,18 +188,21 @@
             </ul>
           </div>
 
-          <div class="chatBox" id="messages">
-          </div>
+          <div class="chatBox" id="messages"></div>
 
           <div class="chatBox_input">
             <input id="userFile" type="file" accept="image/png, image/jpeg" hidden />
             <button id="sendFile"><ion-icon name="attach-outline"></ion-icon></button>
             <input type="text" id="userMessage" placeholder="Escribir mensaje" />
-            <button id="sendMessage"><ion-icon name="send-outline"></ion-icon></button>
+            <button id="sendMessage"><img src="https://cdn-icons-png.flaticon.com/512/3682/3682321.png" alt="Enviar" style="width: 24px; height: 24px; margin-right: 10px;" /></button>
+            <button id="toggleEmojiPicker"><img src="https://w7.pngwing.com/pngs/100/71/png-transparent-lol-emoji-face-with-tears-of-joy-emoji-laughter-emoticon-smiley-angry-emoji-sticker-angry-emoji-smile-thumbnail.png" alt="Emojis" style="width: 24px; height: 24px;" /></button>
+            <div id="emojiPicker" style="display: none;"></div>
           </div>
         </div>
       </div>
     </section>
+
+    <div id="chatBubblesContainer"></div>
 
     <!-- Modal para chat privado -->
     <div id="privateChatModal" class="modal">
@@ -205,19 +214,15 @@
           <button id="privateSendFile"><ion-icon name="attach-outline"></ion-icon></button>
           <input type="text" id="privateUserMessage" placeholder="Escribir mensaje" />
           <button id="privateSendMessage"><ion-icon name="send-outline"></ion-icon></button>
+          <button id="togglePrivateEmojiPicker"><ion-icon name="happy-outline"></ion-icon></button>
+          <div id="privateEmojiPicker" style="display: none;"></div>
         </div>
       </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/client.js"></script>
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
-    ></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   </body>
 </html>

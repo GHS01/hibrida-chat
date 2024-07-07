@@ -1,6 +1,14 @@
 {
+  "name": "chat-web-socket-io-main",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "express": "^4.18.2",
-    "socket.io": "^4.6.1"
+    "express": "^4.17.1",
+    "http": "^0.0.0",
+    "path": "^0.12.7",
+    "socket.io": "^4.0.1"
   }
 }
